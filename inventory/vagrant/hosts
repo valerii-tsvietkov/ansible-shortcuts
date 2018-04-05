@@ -1,0 +1,9 @@
+localhost   ansible_connection=local
+node1	ansible_user=vagrant	ansible_host=192.168.56.11	ansible_private_key_file=/vagrant/.vagrant/machines/node1/virtualbox/private_key
+node2	ansible_user=vagrant	ansible_host=192.168.56.12	ansible_private_key_file=/vagrant/.vagrant/machines/node2/virtualbox/private_key
+
+[group_name1]
+node1
+
+[group_name2]
+node2

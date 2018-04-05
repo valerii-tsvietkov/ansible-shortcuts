@@ -1,0 +1,3 @@
+# do not hide it here vagrant aviable from localhost only and not contain sensitive data
+vault_secret_username: admin
+vault_secret_password: changed

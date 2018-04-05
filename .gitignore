@@ -1,0 +1,11 @@
+#ignore vagrant runtime directory
+.vagrant/
+
+# Ansible retry files
+*.retry
+
+#ignore tmp files
+*.swp
+
+# intelij IDEA editor
+.idea/
