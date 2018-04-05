@@ -1,0 +1,11 @@
+# use this if You have separate repositories for roles or external roles from Ansible Galaxy
+# ansible-galaxy install -r requirements.yml
+- src: <git url>
+  scm: git
+  version: ebbde1808d5c1fb9777b4131d5a9febe946e5fcd
+  name: galaxy-docker
+
+- src: <git_url>
+  scm: git
+  version: 0e596144f0a1a793c9bbebc70e13df80ca1f5788
+  name: galaxy-ntp

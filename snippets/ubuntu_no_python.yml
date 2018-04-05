@@ -1,0 +1,21 @@
+---
+# On Ubuntu there is situation when Python is not installed by default and Ansible not work
+# There is correction for this
+# reqirements sudo. If run as root and no sudo installed - remove sudo from raw module commands
+- hosts: all
+  gather_facts: False # Default True - this caused playbook to fail without python before install actions
+  tasks:
+    - name: Check usable python
+      ping:
+      ignore_errors: True
+      register: ping_res
+
+    # raw module does not need python
+    - name: Install python for Ansible
+      raw: sudo apt -y update && sudo apt install -y python-minimal
+      when: ping_res|failed
+
+    - name: Re-check usable python
+      ping:
+      become: no
+      when: ping_res|failed
