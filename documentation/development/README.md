@@ -25,14 +25,14 @@ There is a `Vagrantfile` provided in the repository root to allow for easy provi
     * Next, Next, Install
 * [Vagrant](https://www.vagrantup.com/downloads.html) 
 
-### (Optional: Advanced security) Generate SSH key for GIT repo
+### Generate SSH key for GIT repo
 You can use Git with Putty Pageant and not give passwords to Git programm when interacting with repo.  
 Generate dedicated key in Puttygen. Save private part with password.  
 Load public part to Your account
 Use privatekey with pageant. 
 Run Putty and try to connect to git@<repo_ssh_url>. Save repository signature.  
-Connection will fail it is OK.  
-Done. You can use git SSH links.  
+Connection will fail it is OK. Purpose of this connection is to save SSH key of repo to known keys- git bash have bug which not allow doing this.  
+Run [pageant](https://www.ssh.com/ssh/putty/putty-manuals/0.68/Chapter9.html) with right key before interacting with repo via GitBash or SSH from putty to controller VM.
 
 ## Git
 Configure Git for the first time from gitbash
@@ -77,6 +77,13 @@ Problem with disck space? You can delete some unused Vagrant boxes with
 
 You can also halt (shutdown) machines, see the status of all machines, validate the configuration and many things more:  
 `vagrant help`
+
+#### Putty session settings
+`Host:` 192.168.56.2  
+`Session name:` controller  
+`Connection/SSH/Auth/`: (Add checkmark to `Authentification parameters:` [x] Allow agent forwarding)  
+Save session settings.  
+This will give You ability to interact with other repos from Ansible playbooks which running inside Vagrant controller VM. 
 
 #### Vagrant provision(install software) on VMs
 Provision steps for VM `controller` include istallation of developer tools and settings. Look inside [Vagrantfile]Vagrantfile for explanations.  
