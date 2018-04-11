@@ -1,0 +1,5 @@
+- name: Deploy index page
+  template: 
+     src: "index.html" 
+     dest: "{{ web_root_folder }}/"
+  notify: restart apache

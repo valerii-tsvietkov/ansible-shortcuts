@@ -1,0 +1,5 @@
+web_root_folder: "/var/www/vhosts/webroot"
+apache_vhosts:
+      - 
+        servername: "www.{{ bind_zone_name }}"
+        documentroot: "{{ web_root_folder }}"

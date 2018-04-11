@@ -1,11 +1,11 @@
 # use this if You have separate repositories for roles or external roles from Ansible Galaxy
 # ansible-galaxy install -r requirements.yml
-- src: <git url>
+- src: https://github.com/geerlingguy/ansible-role-apache.git
   scm: git
-  version: ebbde1808d5c1fb9777b4131d5a9febe946e5fcd
-  name: galaxy-docker
+  version: c8c80dd3ac6fdefa37bddb12ed80842f6ec8e49f
+  name: galaxy-apache
 
-- src: <git_url>
+- src: https://github.com/ahuffman/ansible-resolv.git
   scm: git
-  version: 0e596144f0a1a793c9bbebc70e13df80ca1f5788
-  name: galaxy-ntp
+  version: 6d9d7e56a4348634a7c188caaea5ca93941f391b
+  name: galaxy-resolv

@@ -1,0 +1,13 @@
+---
+
+# To enable visibility of this playbook in Tower
+- hosts: all:!localhost
+  gather_facts: False
+  tasks:
+    - name: Check usable python
+      ping:
+      ignore_errors: True
+
+- import_playbook: deploy.yml
+
+- import_playbook: test.yml

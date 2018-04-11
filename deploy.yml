@@ -1,0 +1,25 @@
+---
+- import_playbook: snippets/ubuntu_no_python.yml
+
+- hosts: ns
+  become: yes
+  roles:
+    - bind
+
+- hosts: all:!localhost
+  become: yes
+  vars:
+    resolv_nameservers:
+      - "{{ hostvars[groups['ns'][0]]['ansible_host'] }}"
+    resolv_domain: "{{ hostvars[groups['ns'][0]]['bind_zone_name'] }}"
+    resolv_search:
+      - "{{ hostvars[groups['ns'][0]]['bind_zone_name'] }}"
+  roles:
+    - galaxy-resolv
+
+- hosts: web
+  become: yes
+  roles:
+    - galaxy-apache
+    - website
+    

@@ -12,10 +12,6 @@
 {% set _ = one_addr.update({'ip': hostvars[host]['ansible_host'] }) %}
 {% set _ = bind_zone_hosts.append(one_addr) %}
 {% endfor %}
-{% set one_addr = {} %}
-{% set _ = one_addr.update({'name': 'boulderca'}) %}
-{% set _ = one_addr.update({'ip': bind_boulderca }) %}
-{% set _ = bind_zone_hosts.append(one_addr) %}
 {% if bind_www_host %}
 {% set one_addr = {} %}
 {% set _ = one_addr.update({'name': 'www' }) %}
@@ -24,12 +20,6 @@
 {% set one_addr = {} %}
 {% set _ = one_addr.update({'name': '*' }) %}
 {% set _ = one_addr.update({'ip': bind_www_host }) %}
-{% set _ = bind_zone_hosts.append(one_addr) %}
-{% endif %}
-{% if bind_db_host %}
-{% set one_addr = {} %}
-{% set _ = one_addr.update({'name': dbaas_name }) %}
-{% set _ = one_addr.update({'ip': bind_db_host }) %}
 {% set _ = bind_zone_hosts.append(one_addr) %}
 {% endif %}
 {#This END custom part
