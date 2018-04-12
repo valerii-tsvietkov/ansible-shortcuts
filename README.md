@@ -9,7 +9,7 @@ See [step by step guide](documentation/development/) how You can use that. Besid
 * [Ansible Introduction](documentation/intro/)
 * [Ubuntu without python](snippets/ubuntu_no_python.yml)
 * [custom Bind for Dev environments](roles/bind/) enhanced version of role which create DNS zone files from Ansible inventory 
-
+* [Triks](documentation/triks/). List of "A-HA" moments.
 ## Installation of test project
 
 After finishing [step by step guide](documentation/development/) run `vagrant up` in GitBash or Powershell when locating in root folder of this repo.   

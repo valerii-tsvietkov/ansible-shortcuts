@@ -12,7 +12,7 @@ ansible_python_interpreter: "python" # Default absolute path '/usr/bin/python'
 ```
 
 *site.yml*
-``
+```
 ---
 - hosts: all
   gather_facts: True
@@ -20,10 +20,12 @@ ansible_python_interpreter: "python" # Default absolute path '/usr/bin/python'
     PATH: "{{ ansible_env.HOME }}/{{ venv_name }}/bin:{{ ansible_env.PATH }}"
 ```
 
+
 ## From Yaml to Python trough Jinja2
 
 Somethimes You need advanced logic but goal is too small for ansible `filter` plugin or ansible `module`.   
 There is example how can we reach Python from inside task  
+
 
 ```
 - name: Create filtered list according to facts on hosts
@@ -39,6 +41,8 @@ There is example how can we reach Python from inside task
       {% endfor %}
       {{ mem_list }}
 ```
+
+
 You can do to same also in [Jinja2 template](../../roles/bind/templates/bind_zone.j2)  
 Thanks to this [ansver](https://stackoverflow.com/questions/35605603/using-ansible-set-fact-to-create-a-dictionary-from-register-results) for inspiration.
 

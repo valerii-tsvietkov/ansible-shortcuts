@@ -1,0 +1,6 @@
+# Best settings for openstack.py put in /etc/ansible/openstack.yml or modify script to read from this location
+# General rule investigate inventory script sources. It will give You usefull examples.
+ansible:
+  use_hostnames: True
+  expand_hostvars: False
+  fail_on_errors: True
