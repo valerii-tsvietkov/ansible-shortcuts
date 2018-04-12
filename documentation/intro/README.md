@@ -5,6 +5,7 @@
 ## Content:
 - [Benefits of Ansible](#benefits-of-ansible)
 - [Ansible Inventory](#ansible-inventory)
+- [Variables](#variables)
 - [Using Ansible with cloud solutions.](#using-ansible-with-cloud-solutions.)
 - [Continuous Integration and Continuous Deployment with Ansible](#continuous-integration-and-continuous-deployment-with-ansible)
 
@@ -71,9 +72,49 @@ First of all instead of one file is better to point Ansible to whole folder cont
 See [Fedora Ansible repo](https://infrastructure.fedoraproject.org/cgit/ansible.git/tree/inventory) as example  
 This come from Ansible best practices [alternative-directory-layout](http://docs.ansible.com/ansible/devel/user_guide/playbooks_best_practices.html#alternative-directory-layout)  
 
+Try to use host can be in multiple groups. Please use groups as Labels in Kubernetes. 
+Try to not use `[groupname:children]` this makes inventory cloud incompatible
+> only exception is [group renaming](http://docs.ansible.com/ansible/latest/user_guide/intro_dynamic_inventory.html#static-groups-of-dynamic-groups) for cloud dynamic inventory.  
+
+Try not put variables in `hosts` file this makes inventory cloud incompatible. Use `group_vars` directory.
+
+Avoid using `host_vars` except `localhost` other host names can be altered in future.
+
 When dealing with clouds always prefer use of [Dynamic Inventory](http://docs.ansible.com/ansible/intro_dynamic_inventory.). It is an axiom.   
 Please read also about [using-inventory-directories-and-multiple-inventory-sources](http://docs.ansible.com/ansible/latest/user_guide/intro_dynamic_inventory.html#using-inventory-directories-and-multiple-inventory-sources) and [static-groups-of-dynamic-groups](http://docs.ansible.com/ansible/latest/user_guide/intro_dynamic_inventory.html#static-groups-of-dynamic-groups).  
 This is powerful way how to make Your inventory really extendable.  
+
+## Variables
+
+Variables are atached to hosts even when You mention it in group it will boil down that You need target host from this group to access Variable
+examples 
+*cat group_vars/client/main.yml*
+```
+env_dns: "{{ hostvars[groups['ns'][0]]['ansible_host'] }}"
+domain_name: "{{ hostvars[groups['ns'][0]]['bind_zone_name'] }}"
+```
+There is 2 kinds of Variables:  
+### Variables
+something which You know from Ansible project itself even before connect to any hosts 
+To analyze this variables You can run such command:  
+```
+ansible all -m debug -a "var=hostvars[inventory_hostname]"
+```
+### Facts
+something which You discover, declare, or attach during runtime
+Example of automatically gathered facts.
+```
+ansible all -m setup
+```
+Variables and Facts is similar in usage but if there is choyse You should preffer Variables because Ansible know it already.
+
+Variable files do not have reqirements on file name. So You can not name it `main.yml` and free Your imagination.
+
+Variable names in role should include <role_name>_<variable_name> to avoid naming clash.
+
+If You constantly overwrite some configuration parameter default value in role put default in `<role_path>/defaults/*` Your values in `<role_path>/vars/*`  
+This will allow Your future self keep trace what is default without Your changes.
+
 
 ## Using Ansible with cloud solutions.
 
@@ -93,14 +134,14 @@ Using call home url You can empower only Ansible Controller to make modification
 
 ## Continuous Integration and Continuous Deployment with Ansible
 
-Ansible can 
+Ansible playbooks can 
 * deploy new version of code
-* run integration tests
+* run tests
 * deploy code to Production
+  
+Options:
 
-All this definitely possible combining Ansible with different CI/CD tools.  
-
-### BitBucket(Git repo without web interface) + Ansible Tower. 
+### BitBucket( or Git repo without web interface) + Ansible Tower. 
 
 Tower Templates can check repository time to time and react when something changed in particular branch and run predefined deployment scenario.  
 
@@ -113,9 +154,9 @@ Jenkins pipelines can launch Ansible playbooks. No experience with that.
 Gitlab has own [CI/CD and runners concepts](https://docs.gitlab.com/ee/ci/quick_start/). This Runner can reside among managed host periodically watching for repository changes. One option is to put Docker container with Ansible to run deployment Job and integration tests Job.  
 
 *Example pipeline:*
-* Local tests with Docker containers
+* Local tests with Docker containers (Smoke and Unit Tests)
 * Provision Test environment (Cloudformation, Heat or Terraform)
 * Deploy (Ansible)
-* Integration Tests (Ansible)
-* Deprovision Test environment (Cloudformation, Heat or Terraform)
+* Integration Regresion UI Tests (Ansible as a launcher)
+* Deprovision Test environment (Cloudformation, Heat or Terraform) *Optional*
 * Deploy to Production (Ansible)
