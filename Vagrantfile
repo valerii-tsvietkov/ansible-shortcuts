@@ -44,8 +44,8 @@ Vagrant.configure("2") do |config|
 	    && sudo yum install python-pip -y \
 	    && sudo yum -y install screen vim git \
 	    && sudo pip install ansible==2.4.2.0 \
-		&& cd /vagrant/ \
-		&& ansible-galaxy install -r requirements.yml"
+	    && cd /vagrant/ \
+	    && ansible-galaxy install -r requirements.yml"
 	end
     machine.vm.provision :ansible_local do |ansible|
       ansible.playbook       = "site.yml" # can be deploy.yml

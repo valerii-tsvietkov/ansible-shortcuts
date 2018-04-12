@@ -48,18 +48,16 @@ git config user.email "your@email" # Change email
 ```
 # In repository directory
 $ vagrant status
-# Expected result
-Handling vm with hostname [node1] and IP [192.168.56.11]
+Handling vm with hostname [server1] and IP [192.168.56.11]
+Handling vm with hostname [client1] and IP [192.168.56.12]
 Current machine states:
 
-node1               not created (virtualbox)
-controller                running (virtualbox)
+server1                   not created (virtualbox)
+client1                   not created (virtualbox)
+acontroller               not created (virtualbox)
 
-This environment represents multiple VMs. The VMs are all listed
-above with their current state. For more information about a specific
-VM, run `vagrant status NAME`.
-
-$ vagrant up <node1|node2|etc> controller
+# Create all environment and launch
+$ vagrant up
 ```
 
 #### Suspend and resume after initial up

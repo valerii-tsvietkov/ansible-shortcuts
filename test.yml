@@ -3,10 +3,10 @@
   become: yes
   vars:
     resolv_nameservers:
-      - "{{ hostvars[groups['ns'][0]]['ansible_host'] }}"
-    resolv_domain: "{{ hostvars[groups['ns'][0]]['bind_zone_name'] }}"
+      - "{{ env_dns }}"
+    resolv_domain: "{{ domain_name }}"
     resolv_search:
-      - "{{ hostvars[groups['ns'][0]]['bind_zone_name'] }}"
+      - "{{ domain_name }}"
   roles:
     - galaxy-resolv
 
@@ -14,7 +14,7 @@
   tasks:
     - name: Test that web server and DNS is working as expected
       uri:
-        url: "http://www.{{ hostvars[groups['ns'][0]]['bind_zone_name'] }}"
+        url: "http://www.{{ domain_name }}"
         return_content: yes
       register: webpage
     

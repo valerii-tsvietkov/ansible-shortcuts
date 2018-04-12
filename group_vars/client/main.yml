@@ -1,0 +1,2 @@
+env_dns: "{{ hostvars[groups['ns'][0]]['ansible_host'] }}"
+domain_name: "{{ hostvars[groups['ns'][0]]['bind_zone_name'] }}"
