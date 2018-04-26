@@ -23,7 +23,7 @@ My opinion about Puppet Pull configuration Orchestration model that it best suit
 Maybe I am wrong and in Puppet also possible put some dependency and ordering who will receive what commands and when.   
 But with Ansible push model it looks more straightforward how to control tight related on each other services deployment  
 
-For example:  
+For example:   
 *site.yml*
 ```
 ---
@@ -51,7 +51,7 @@ This require install Ansible on each host and instruct to monitor some repositor
 
 - name: Check something with command which not changed state
   command: show something
-  changed: False
+  changed_when: False
   register: show_res
 
 - name: Idempotency example for command module. Do not run if file is already there
@@ -82,11 +82,11 @@ Avoid using `host_vars` except `localhost` other host names can be altered in fu
 
 When dealing with clouds always prefer use of [Dynamic Inventory](http://docs.ansible.com/ansible/intro_dynamic_inventory.). It is an axiom.   
 Please read also about [using-inventory-directories-and-multiple-inventory-sources](http://docs.ansible.com/ansible/latest/user_guide/intro_dynamic_inventory.html#using-inventory-directories-and-multiple-inventory-sources) and [static-groups-of-dynamic-groups](http://docs.ansible.com/ansible/latest/user_guide/intro_dynamic_inventory.html#static-groups-of-dynamic-groups).  
-This is powerful way how to make Your inventory really extendable.  
+This is powerful way how to make Your inventory extendable.  
 
 ## Variables
 
-Variables are atached to hosts even when You mention it in group it will boil down that You need target host from this group to access Variable
+Variables are attached to hosts even when You mention it in group it will boil down that You need target host from this group to access Variable
 examples 
 *cat group_vars/client/main.yml*
 ```
@@ -95,30 +95,30 @@ domain_name: "{{ hostvars[groups['ns'][0]]['bind_zone_name'] }}"
 ```
 There is 2 kinds of Variables:  
 ### Variables
-something which You know from Ansible project itself even before connect to any hosts 
-To analyze this variables You can run such command:  
+something which You know from Ansible project itself even before connecting to any hosts 
+To analyze this variables, You can run such command:   
 ```
 ansible all -m debug -a "var=hostvars[inventory_hostname]"
 ```
 ### Facts
 something which You discover, declare, or attach during runtime
-Example of automatically gathered facts.
+Example of automatically gathered facts.  
 ```
 ansible all -m setup
 ```
-Variables and Facts is similar in usage but if there is choyse You should preffer Variables because Ansible know it already.
+Variables and Facts is similar in usage but if there is chose You should prefer Variables because Ansible know it already.
 
-Variable files do not have reqirements on file name. So You can not name it `main.yml` and free Your imagination.
+Variable files do not have requirements on file name. Instead off `main.yml` please use meaningful name.
 
 Variable names in role should include <role_name>_<variable_name> to avoid naming clash.
 
 If You constantly overwrite some configuration parameter default value in role put default in `<role_path>/defaults/*` Your values in `<role_path>/vars/*`  
-This will allow Your future self keep trace what is default without Your changes.
+This will allow “Your future self”, keep trace what is default without changes.
 
 
 ## Using Ansible with cloud solutions.
 
-For best user experience put controller host more close to managed resources.  
+For best user experience put controller host closer to managed resources.  
 Ansible has modules for spin up VMs and resources in AWS, OpenStack, Azure- try not to use them at all.  
 
 VM and resources is more easily created and managed using cloud native provision solution like CloudFormation, Heat, Terraform which purpose is to manage not only creation but whole lifecycle of virtual infrastructure.  
@@ -143,7 +143,7 @@ Options:
 
 ### BitBucket( or Git repo without web interface) + Ansible Tower. 
 
-Tower Templates can check repository time to time and react when something changed in particular branch and run predefined deployment scenario.  
+Tower Templates can check repository time to time and react when something changed and run predefined deployment scenario.  
 
 ### Jenkins + Ansible
 

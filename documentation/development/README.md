@@ -26,7 +26,7 @@ There is a `Vagrantfile` provided in the repository root to allow for easy provi
 * [Vagrant](https://www.vagrantup.com/downloads.html) 
 
 ### Generate SSH key for GIT repo
-You can use Git with Putty Pageant and not give passwords to Git programm when interacting with repo.  
+You can use Git with Putty Pageant and not give passwords to Git program when interacting with repo.  
 Generate dedicated key in Puttygen. Save private part with password.  
 Load public part to Your account
 Use privatekey with pageant. 
@@ -70,21 +70,21 @@ Come back to development next day
 To stop all VMs and purge it from Oracle Vbox:  
 `vagrant destroy -f`  
 
-Problem with disck space? You can delete some unused Vagrant boxes with  
+Problem with disc space? You can delete some unused Vagrant boxes with  
 `vagrant box`   
 
 You can also halt (shutdown) machines, see the status of all machines, validate the configuration and many things more:  
 `vagrant help`
 
 #### Putty session settings
-`Host:` 192.168.56.2  
-`Session name:` controller  
-`Connection/SSH/Auth/`: (Add checkmark to `Authentification parameters:` [x] Allow agent forwarding)  
+`Host:` 192.168.56.2   
+`Session name:` controller   
+`Connection/SSH/Auth/`: (Add checkmark to `Authentication parameters:` [x] Allow agent forwarding)   
 Save session settings.  
 This will give You ability to interact with other repos from Ansible playbooks which running inside Vagrant controller VM. 
 
 #### Vagrant provision(install software) on VMs
-Provision steps for VM `controller` include istallation of developer tools and settings. Look inside [Vagrantfile]Vagrantfile for explanations.  
+Provision steps for VM `controller` include installation of developer tools and settings. Look inside [Vagrantfile](../../Vagrantfile) for explanations.  
 SSH to controller VM using Putty (192.168.56.2 L/P vagrant/vagrant)  
 Check "Forward SSH agent" Putty option if You want be able to do git commit with ssh key from inside VM.  
 
@@ -106,11 +106,11 @@ All changes to that file should be reflected to [inventory/vagrant/hosts](../../
 ## Contributing Guide
 
 Main principles writing/editing roles
- * Idempodency 
+ * Idempotency 
 (each subsequent run should not change already changed state. 
 Check desired result before modification)
 
- * All environment specifyc host data should come from inventory system. 
+ * All environment specific host data should come from inventory system. 
 Or be defined dynamicaly via runtime.
 wisely use "__group_vars/__" and do not use __host_vars/__ at all because 
 __inventory_hostname__ can be changed with time.

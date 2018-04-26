@@ -46,4 +46,26 @@ There is example how can we reach Python from inside task
 You can do to same also in [Jinja2 template](../../roles/bind/templates/bind_zone.j2)  
 Thanks to this [ansver](https://stackoverflow.com/questions/35605603/using-ansible-set-fact-to-create-a-dictionary-from-register-results) for inspiration.
 
+## Restart only when Ansible run in serial mode
+Serial mode you can use for "Canary deployments" or "rolling update" scenario  
+```
+- name: restart mysql
+  service: 
+    name: "{{ mariadb_svc_name }}"
+    state: restarted
+  when: galera_cluster_status.stdout == '1' and ansible_play_batch < ansible_play_hosts
+# restart only on existing cluster nodes when serial: mode is active
+```
+
+## Trickle restart
+This looks like bug but works like feature. You can restart services one by one not using serial mode  
+```
+- name: restart mysql
+  service: 
+    name: "{{ mariadb_svc_name }}"
+    state: restarted
+  delegate_to: "{{ item }}"
+  run_once: True
+  with_items: "{{ ansible_play_hosts }}"
+```
 
