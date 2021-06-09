@@ -1,0 +1,27 @@
+---
+- hosts: localhost
+  become: false
+  gather_facts: false
+  tasks:
+    - name: "Create {{ ansible_inventory_sources|first|basename }}_ssh.cfg"
+      copy:
+        dest: "{{ playbook_dir }}/{{ ansible_inventory_sources|first|basename }}_ssh.cfg"
+        content: |
+          Host *
+          UserKnownHostsFile /dev/null
+          StrictHostKeyChecking no
+          PasswordAuthentication no
+          IdentitiesOnly yes
+          LogLevel FATAL
+          ServerAliveInterval 30
+          ServerAliveCountMax 4
+          {% for host in groups['all'] %}
+          {% if host != 'localhost' %}
+          Host {{ hostvars[host]['inventory_hostname'] }}
+          {% if hostvars[host]['ansible_host'] is defined %}
+          HostName {{ hostvars[host]['ansible_host'] }}
+          {% endif %}
+          User {{ hostvars[host]['ansible_user']|default('ansible') }}
+          IdentityFile {{ hostvars[host]['ansible_ssh_private_key_file']|default(hostvars[host]['ansible_private_key_file'])|default('~/.ssh/id_rsa_ansible') }}
+          {% endif %}
+          {% endfor %}

@@ -1,0 +1,90 @@
+# Usage
+# ansible-playbook playbooks/resolv_hostnames_update.yml -e domain_suffix=uat.domain.com
+# ansible-playbook playbooks/resolv_hostnames_update.yml --t removename
+---
+- hosts: localhost
+  become: false
+  gather_facts: false
+  tasks:
+    - name: Check environment
+      assert:
+        that: "'lvagrant' in ansible_inventory_sources|first|basename"
+        msg: "This playbook is for lvagrant environment"
+      tags: [always, removename]
+
+- hosts: all:!localhost
+  gather_facts: false
+  become: true
+  tasks:
+    - name: "Resolv iself by invetory_hostname with domain {{ domain_suffix|default('domain.com') }}"
+      lineinfile:
+        path: /etc/hosts
+        line: "127.0.0.1 {{ inventory_hostname }}.{{ domain_suffix|default('domain.com') }} {{ inventory_hostname }}"
+
+    - name: "Update hostname to inventory_hostname with .{{ domain_suffix|default('domain.com') }}"
+      ansible.builtin.hostname:
+        name: "{{ inventory_hostname }}.{{ domain_suffix|default('domain.com') }}"
+
+    - name: "Resolv iself by invetory_hostname without domain"
+      lineinfile:
+        path: /etc/hosts
+        line: "127.0.0.1 {{ inventory_hostname }}"
+      tags: [never, removename]
+
+    - name: "Update hostname to invetory_hostname without domain"
+      ansible.builtin.hostname:
+        name: "{{ inventory_hostname }}"
+      tags: [never, removename]
+
+    - name: Variable set to absent for next task
+      set_fact:
+        website_state: "absent"
+      tags: [never, removename]
+
+    - name: Update /etc/hosts with list of web sites for SSL check pass
+      lineinfile:
+        path: /etc/hosts
+        regexp: ".+ {{ item.name }}"
+        line: "{{ item.ip }} {{ item.name }}"
+        state: "{{ website_state|default(omit) }}"
+      loop: "{{ websites }}"
+
+- hosts: localhost
+  become: false
+  gather_facts: false
+  tasks:
+    - name: Copy /etc/hosts to ./etc-hosts
+      copy:
+        src: /etc/hosts
+        dest: "{{ playbook_dir }}/../etc-hosts"
+      tags: always
+
+    - name: Copy /etc/hosts to ./etc-hosts.bk
+      copy:
+        src: /etc/hosts
+        dest: "{{ playbook_dir }}/../etc-hosts.bk"
+      tags: always
+
+    - name: Variable set to absent for next task
+      set_fact:
+        website_state: "absent"
+      tags: [never, removename]
+
+    - name: Update ./etc-hosts with list of web sites for SSL check pass
+      lineinfile:
+        path: "{{ playbook_dir }}/../etc-hosts"
+        regexp: ".+ {{ item.name }}"
+        line: "{{ item.ip }} {{ item.name }}"
+        state: "{{ website_state|default(omit) }}"
+      loop: "{{ websites }}"
+      register: websites_update_res
+      tags: always
+
+    - name: Inform what need to be done with super user privileges
+      debug:
+        msg:
+          - "Please run:"
+          - "sudo cp etc-hosts /etc/hosts"
+          - "backup is in etc-hosts.bk"
+      when: websites_update_res is changed
+      tags: always

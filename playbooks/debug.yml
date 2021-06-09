@@ -1,0 +1,51 @@
+---
+# Usage:
+# ansible-playbook -i inventories/int02/ playbooks/debug.yml -e "var=haproxy_conf_list" --limit haproxy
+- hosts: all
+  gather_facts: false
+  #gather_facts: true
+  #gather_subset: "!all"
+  become: false
+  tasks:
+    # Default action, all tags listed for reflecting them in --list-tags output
+    - name: "Host connection info \"ansible_host\""
+      debug:
+        var: ansible_host
+      tags: always
+        
+    - name: "List of groups the current host is part of \"group_names\""
+      debug:
+        var: group_names
+      tags: always
+
+    - name: Info
+      debug:
+        msg:
+          - "For additional info please use tags"
+          - "ansible-playbook -i {{ inv_p }} playbooks/debug.yml -e var=haproxy_conf_list --limit haproxy"
+          - "ansible-playbook -i {{ inv_p }} playbooks/debug.yml --tags groups --limit haproxy"
+          - "ansible-playbook -i {{ inv_p }} playbooks/debug.yml --tags hostvars --limit haproxy"
+      run_once: true
+      tags:
+        - groups
+        - hostvars
+        - var
+      vars:
+        inv_p: "inventories/{{ ansible_inventory_sources|first|basename }}"
+
+    - name: "A dictionary/map with all the groups in inventory and each group has the list of hosts that belong to it \"groups\""
+      debug:
+        var: groups
+      run_once: true
+      tags: [never, groups]
+
+    - name: "A dictionary/map with all the hosts in inventory and variables assigned to them \"hostvars[inventory_hostname]\""
+      debug:
+        var: hostvars[inventory_hostname]
+      tags: [ never, hostvars ]
+
+
+    - name: Debug particular variable
+      debug:
+        var: "{{ var }}"
+      when: var is defined

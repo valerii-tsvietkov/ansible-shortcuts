@@ -25,6 +25,8 @@ Vagrant.configure("2") do |config|
       machine_config.vm.box = machine_details[:box] ||= ansible_hosts["all"]["vars"]["default_base_box"]
       machine_config.vm.network :private_network, ip: machine_ip
       machine_config.vm.hostname = machine_name.to_s
+      # Disabling sync folder
+      machine_config.vm.synced_folder '.', '/vagrant', disabled: true
       machine_config.vm.provider :virtualbox do |vb|
         # Save time
         vb.check_guest_additions = false
@@ -34,6 +36,9 @@ Vagrant.configure("2") do |config|
         vb.customize ["modifyvm", :id, "--groups", "/Ansible_Lab"]
         vb.customize ["modifyvm", :id, "--memory", reserved_mem]
         vb.customize ["modifyvm", :id, "--cpus", reserved_cpu]
+        # Workarround for VPN which change name resolution on host
+        vb.customize ["modifyvm", :id, "--natdnshostresolver1", "on"]
+        vb.customize ["modifyvm", :id, "--natdnsproxy1", "on"]
         vb.gui = false
       end #vb
     end #machine_config
